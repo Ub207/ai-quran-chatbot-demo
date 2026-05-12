@@ -21,135 +21,156 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# --- Custom CSS for Islamic Theme ---
+# --- Custom CSS — Light Warm Islamic Theme ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap');
 
-/* Main container */
+/* ── Background ── */
 .stApp {
-    background: linear-gradient(135deg, #0a1628 0%, #1a2f4a 50%, #0d2137 100%);
+    background: #fdfaf5;
+    font-family: 'Poppins', sans-serif;
 }
 
-/* Header */
+/* hide default streamlit top bar */
+header[data-testid="stHeader"] { background: transparent; }
+
+/* ── Header ── */
 .academy-header {
     text-align: center;
-    padding: 2rem 1rem;
-    background: linear-gradient(180deg, rgba(212,175,55,0.15) 0%, transparent 100%);
-    border-bottom: 2px solid rgba(212,175,55,0.3);
+    padding: 2rem 1rem 1.5rem;
+    background: linear-gradient(180deg, #fff8ee 0%, #fdfaf5 100%);
+    border-bottom: 2px solid #e8d8b0;
     margin-bottom: 1.5rem;
+    border-radius: 0 0 16px 16px;
 }
-
-.academy-header h1 {
-    font-family: 'Amiri', serif;
-    color: #d4af37;
-    font-size: 2.2rem;
-    margin-bottom: 0.3rem;
-    text-shadow: 0 2px 10px rgba(212,175,55,0.3);
-}
-
 .academy-header .bismillah {
     font-family: 'Amiri', serif;
-    color: rgba(212,175,55,0.8);
-    font-size: 1.6rem;
-    margin-bottom: 0.5rem;
+    color: #b8860b;
+    font-size: 1.8rem;
+    margin-bottom: 6px;
 }
-
+.academy-header h1 {
+    font-family: 'Amiri', serif;
+    color: #3a2a00;
+    font-size: 1.9rem;
+    margin-bottom: 6px;
+}
 .academy-header p {
-    font-family: 'Poppins', sans-serif;
-    color: #8fa8c8;
-    font-size: 0.95rem;
+    color: #7a6a50;
+    font-size: 0.9rem;
     font-weight: 300;
 }
 
-/* Chat messages */
-.stChatMessage {
-    font-family: 'Poppins', sans-serif;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.06) !important;
-    border: 1px solid rgba(255,255,255,0.1);
+/* ── Chat area background ── */
+[data-testid="stChatMessageContainer"],
+.stChatFloatingInputContainer {
+    background: #fdfaf5;
 }
 
+/* ── Chat messages shared ── */
+.stChatMessage {
+    font-family: 'Poppins', sans-serif !important;
+    border-radius: 14px !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07) !important;
+}
+
+/* All text inside messages */
 .stChatMessage p,
 .stChatMessage li,
+.stChatMessage ol,
+.stChatMessage ul,
+.stChatMessage strong,
+.stChatMessage em,
 .stChatMessage span,
-.stChatMessage div,
-.stChatMessage .stMarkdown,
-.stChatMessage [data-testid="stMarkdownContainer"] {
-    color: #e8eef5 !important;
-    font-size: 0.95rem;
-    line-height: 1.7;
+.stChatMessage [data-testid="stMarkdownContainer"],
+.stChatMessage [data-testid="stMarkdownContainer"] * {
+    color: #2a1f00 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.75 !important;
 }
 
-/* User message bubble */
-.stChatMessage[data-testid="user-message"] {
-    background: rgba(212,175,55,0.12) !important;
-    border: 1px solid rgba(212,175,55,0.25);
+/* ── User bubble — warm gold tint ── */
+[data-testid="stChatMessageContent"]:has(~ [data-testid="chatAvatarIcon-user"]),
+.stChatMessage:has([data-testid="chatAvatarIcon-user"]) {
+    background: linear-gradient(135deg, #fff8e1, #fef3c7) !important;
+    border: 1px solid #d4a017 !important;
 }
 
-/* Assistant message bubble */
-.stChatMessage[data-testid="assistant-message"] {
-    background: rgba(255,255,255,0.07) !important;
+/* ── Assistant bubble — clean white ── */
+.stChatMessage:has([data-testid="chatAvatarIcon-assistant"]) {
+    background: #ffffff !important;
+    border: 1px solid #e8dcc8 !important;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0d2137 0%, #1a2f4a 100%);
-}
-
-section[data-testid="stSidebar"] .stMarkdown {
-    color: #c8d8e8;
-}
-
-/* Buttons */
+/* ── Quick question buttons ── */
 .stButton > button {
-    background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
-    color: #0a1628;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    background: #ffffff !important;
+    color: #8a6d1e !important;
+    border: 1.5px solid #c8a96e !important;
+    border-radius: 22px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    padding: 6px 14px !important;
+    transition: all 0.2s ease !important;
 }
-
 .stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+    background: #c8a96e !important;
+    color: #ffffff !important;
+    border-color: #c8a96e !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(200,169,110,0.35) !important;
 }
 
-/* Input */
-.stChatInput {
-    font-family: 'Poppins', sans-serif;
+/* Clear Chat button — red tint */
+.stButton > button[kind="secondary"] {
+    border-color: #e57373 !important;
+    color: #c62828 !important;
+}
+.stButton > button[kind="secondary"]:hover {
+    background: #e57373 !important;
+    color: #fff !important;
 }
 
-/* Quick questions */
-.quick-q {
-    display: inline-block;
-    background: rgba(212,175,55,0.1);
-    border: 1px solid rgba(212,175,55,0.3);
-    border-radius: 20px;
-    padding: 0.4rem 1rem;
-    margin: 0.2rem;
-    color: #d4af37;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
+/* ── Chat input box ── */
+[data-testid="stChatInput"] textarea {
+    background: #ffffff !important;
+    color: #2a1f00 !important;
+    border: 1.5px solid #d4b86a !important;
+    border-radius: 12px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.95rem !important;
+}
+[data-testid="stChatInput"] textarea::placeholder {
+    color: #b0956a !important;
 }
 
-.quick-q:hover {
-    background: rgba(212,175,55,0.25);
+/* ── Sidebar ── */
+section[data-testid="stSidebar"] {
+    background: #fff8ee !important;
+    border-right: 1px solid #e8d8b0;
+}
+section[data-testid="stSidebar"] * {
+    color: #3a2a00 !important;
+}
+section[data-testid="stSidebar"] hr {
+    border-color: #e8d8b0;
 }
 
-/* Footer */
+/* ── Section header (Quick Questions label) ── */
+h4 { color: #5a4010 !important; }
+
+/* ── Footer ── */
 .footer {
     text-align: center;
     padding: 1rem;
-    color: #5a7a9a;
+    color: #a08050;
     font-family: 'Poppins', sans-serif;
     font-size: 0.75rem;
     margin-top: 2rem;
-    border-top: 1px solid rgba(212,175,55,0.15);
+    border-top: 1px solid #e8d8b0;
 }
 </style>
 """, unsafe_allow_html=True)
