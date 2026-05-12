@@ -634,5 +634,150 @@
   <p>© 2025 <span>Al-Mizan Online Quran Academy</span> · Founded by Qari Hafiz Ubaid ur Rehman · Serving students worldwide</p>
 </footer>
 
+
+<!-- ── AI CHAT WIDGET ── -->
+<style>
+  #ai-chat-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    background: linear-gradient(135deg, #c8a96e, #a8893e);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 22px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(200,169,110,0.5);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+  #ai-chat-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(200,169,110,0.6);
+  }
+  #ai-chat-btn .pulse {
+    width: 8px;
+    height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+
+  #chat-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 10000;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 28px;
+  }
+  #chat-modal-overlay.open { display: flex; }
+  #chat-modal {
+    width: 420px;
+    height: 640px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    background: #0a1628;
+  }
+  #chat-modal-header {
+    background: linear-gradient(135deg, #1a2f4a, #0d2137);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(200,169,110,0.25);
+  }
+  #chat-modal-header span {
+    color: #c8a96e;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  #chat-close-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.2s;
+  }
+  #chat-close-btn:hover { color: #fff; }
+  #chat-iframe {
+    flex: 1;
+    border: none;
+    width: 100%;
+  }
+  @media (max-width: 500px) {
+    #chat-modal { width: 100%; height: 85vh; }
+    #chat-modal-overlay { padding: 0; align-items: flex-end; }
+    #chat-modal { border-radius: 16px 16px 0 0; }
+  }
+</style>
+
+<!-- Floating Chat Button -->
+<button id="ai-chat-btn" onclick="openChat()">
+  <span class="pulse"></span>
+  🤖 AI Assistant
+</button>
+
+<!-- Chat Modal -->
+<div id="chat-modal-overlay" onclick="closeOnOverlay(event)">
+  <div id="chat-modal">
+    <div id="chat-modal-header">
+      <span>🕌 Al-Mizan AI Assistant</span>
+      <button id="chat-close-btn" onclick="closeChat()">✕</button>
+    </div>
+    <iframe id="chat-iframe" src="" title="Al-Mizan AI Chatbot"></iframe>
+  </div>
+</div>
+
+<script>
+  // IMPORTANT: After deploying to Streamlit Cloud, replace this URL with your real app URL
+  var CHATBOT_URL = "https://al-meezan-chatbot.streamlit.app";
+
+  function openChat() {
+    var overlay = document.getElementById("chat-modal-overlay");
+    var iframe = document.getElementById("chat-iframe");
+    if (!iframe.src || iframe.src === window.location.href) {
+      iframe.src = CHATBOT_URL;
+    }
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeChat() {
+    document.getElementById("chat-modal-overlay").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function closeOnOverlay(e) {
+    if (e.target === document.getElementById("chat-modal-overlay")) closeChat();
+  }
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeChat();
+  });
+</script>
+
 </body>
 </html>
