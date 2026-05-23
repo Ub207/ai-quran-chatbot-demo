@@ -5,14 +5,17 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # ======================
-# LOAD ENV FIRST (IMPORTANT)
+# LOAD ENV FIRST
 # ======================
 load_dotenv()
 
 # ======================
 # PAGE CONFIG
 # ======================
-st.set_page_config(page_title="Finance Literacy Assistant", page_icon="💰")
+st.set_page_config(
+    page_title="Al-Mizan Quran Academy - AI Assistant",
+    page_icon="🕌",
+)
 
 # ======================
 # SESSION STATE
@@ -28,19 +31,18 @@ def load_knowledge_base():
     from sentence_transformers import SentenceTransformer
     import faiss
 
-    kb_path = Path(__file__).parent / "finance_kb.txt"
+    kb_path = Path(__file__).parent / "quran_academy_kb.txt"
 
     if not kb_path.exists():
-        st.error("KB file missing: finance_kb.txt")
+        st.error("Knowledge base file missing: quran_academy_kb.txt")
         st.stop()
 
     text = kb_path.read_text(encoding="utf-8")
 
-    # chunking
+    # Split into chunks by double newline
     chunks = [c.strip() for c in text.split("\n\n") if c.strip()]
 
     embedder = SentenceTransformer("all-MiniLM-L6-v2")
-
     embeddings = embedder.encode(chunks)
     embeddings = np.array(embeddings).astype("float32")
 
@@ -53,9 +55,7 @@ def load_knowledge_base():
 def retrieve_context(query, chunks, index, embedder, top_k=3):
     q_emb = embedder.encode([query])
     q_emb = np.array(q_emb).astype("float32")
-
     _, idxs = index.search(q_emb, top_k)
-
     return "\n\n".join([chunks[i] for i in idxs[0] if i < len(chunks)])
 
 
@@ -75,19 +75,20 @@ def get_groq_response(user_message, context, chat_history):
 
     client = Groq(api_key=api_key)
 
-    system_prompt = f"""
-You are a Finance AI Assistant.
+    system_prompt = f"""You are a helpful AI assistant for Al-Mizan Online Quran Academy, founded by Qari Hafiz Ubaid ur Rehman.
 
 ROLE:
-Help users with personal finance, budgeting, savings, investment basics, and financial planning.
+Help visitors learn about the academy, its courses, enrollment process, and Quran education in general.
 
 RULES:
-- Simple language
-- Practical examples
-- If info not in context, say you don't know
-- Keep answers short
+- Be warm, respectful, and professional
+- Use simple and clear language
+- Answer in the same language the user writes in (Urdu or English)
+- If the answer is not in the context below, politely say you don't have that information and suggest contacting the academy directly
+- Keep answers concise but helpful
+- Begin responses with Islamic greetings when appropriate (e.g., Assalamu Alaikum)
 
-CONTEXT:
+CONTEXT FROM KNOWLEDGE BASE:
 {context}
 """
 
@@ -102,7 +103,7 @@ CONTEXT:
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=messages,
-            temperature=0.3,
+            temperature=0.4,
             max_tokens=600,
         )
         return response.choices[0].message.content
@@ -114,17 +115,20 @@ CONTEXT:
 # ======================
 # UI
 # ======================
-st.title("💰 Finance Literacy AI Assistant")
+st.title("🕌 Al-Mizan Online Quran Academy")
+st.caption("AI Assistant — Ask anything about our courses, enrollment, and more")
+
+st.markdown("---")
 
 chunks, index, embedder = load_knowledge_base()
 
-# chat history render
+# Render chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# input
-prompt = st.chat_input("Ask anything about personal finance...")
+# Chat input
+prompt = st.chat_input("Ask about courses, enrollment, fees, timings...")
 
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -133,12 +137,9 @@ if prompt:
         st.markdown(prompt)
 
     context = retrieve_context(prompt, chunks, index, embedder)
-
     response = get_groq_response(prompt, context, st.session_state.messages)
 
     with st.chat_message("assistant"):
         st.markdown(response)
 
-    st.session_state.messages.append(
-        {"role": "assistant", "content": response}
-    )
+    st.session_state.messages.append({"role": "assistant", "content": response})
